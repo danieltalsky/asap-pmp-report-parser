@@ -12,12 +12,12 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'mypackage'
-DESCRIPTION = 'My short description for my project.'
-URL = 'https://github.com/me/myproject'
-EMAIL = 'me@example.com'
-AUTHOR = 'Awesome Soul'
-REQUIRES_PYTHON = '>=3.6.0'
+NAME = 'asap-pmp-report-project'
+DESCRIPTION = 'Python parser for PMP Pharmacy Reports in the ASAP format'
+URL = 'https://github.com/danieltalsky/asap-pmp-report-parser'
+EMAIL = 'danieltalsky@gmail.com'
+AUTHOR = 'Daniel Talsky'
+REQUIRES_PYTHON = '>=3.10'
 VERSION = None
 LICENSE = 'MIT'
 # What packages are required for this module to be executed?
