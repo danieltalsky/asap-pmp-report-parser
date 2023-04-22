@@ -1,14 +1,11 @@
 import re
 
-# - @TODO: Collect the dispense record groups
-# - @TODO: Obscure HIPPAA
-# - @TODO: Rudimentary output
-
 
 class InvalidASAPFile(Exception):
     """
     An ASAP file string doesn't have a valid header
     """
+
     pass
 
 
@@ -21,19 +18,19 @@ class ASAPSection:
     """
 
     ALLOWED_ASAP_SECTIONS = [
-        'TH',
-        'IS',
-        'PHA',
-        'PAT',
-        'DSP',
-        'PRE',
-        'CDI',
-        'AIR',
-        'TP',
-        'TT'
+        "TH",
+        "IS",
+        "PHA",
+        "PAT",
+        "DSP",
+        "PRE",
+        "CDI",
+        "AIR",
+        "TP",
+        "TT",
     ]
 
-    DELIMITER_ASAP_FIELD_SEP = '*'
+    DELIMITER_ASAP_FIELD_SEP = "*"
 
     section_header: str
     fields: list[str]
@@ -56,15 +53,27 @@ class ASAPSection:
         """
         return section_string.split(self.DELIMITER_ASAP_FIELD_SEP)
 
-    def __str__(self):
-        output = ''
+    def get_field_code(self, field_number: int) -> str:
+        """
+        Creates the field code string from the header and positional integer
+
+        TH + 0 + 2 = TH02
+        @param field_number:
+        """
+        return self.section_header + str(field_number).zfill(2)
+
+    def asdict(self):
+        output_dict = {}
         for field_number, field_value in enumerate(self.fields):
-            if field_number < 1:
-                continue
-            # TH + 0 + 2 = TH02
-            if field_value:
-                field_code = self.section_header + str(field_number).zfill(2)
-                output += f'{field_code}: {field_value}\n'
+            if field_number > 0:
+                output_dict[self.get_field_code(field_number)] = field_value
+        return output_dict
+
+    def __str__(self):
+        output = ""
+        for field_number, field_value in enumerate(self.fields):
+            if field_number > 0:
+                output += f"{self.get_field_code(field_number)}: {field_value}\n"
         return output
 
 
@@ -74,11 +83,11 @@ class ASAPDispense:
     """
 
     DISPENSE_SECTION_HEADERS = [
-        'PAT',
-        'DSP',
-        'PRE',
-        'CDI',
-        'AIR',
+        "PAT",
+        "DSP",
+        "PRE",
+        "CDI",
+        "AIR",
     ]
 
     sections: list[ASAPSection]
@@ -99,23 +108,15 @@ class ASAP:
 
     Contains an array of ASAPSection objects and an array of ASAPDispense objects
     """
-    ASAP_VERIFICATION_HEADER = 'TH*'
 
-    REQUIRED_ASAP_SECTIONS = [
-        'TH',
-        'IS',
-        'PHA',
-        'PAT',
-        'DSP',
-        'PRE',
-        'TP',
-        'TT'
-    ]
+    ASAP_VERIFICATION_HEADER = "TH*"
 
-    DELIMITER_ASAP_SECTION = '~'
+    REQUIRED_ASAP_SECTIONS = ["TH", "IS", "PHA", "PAT", "DSP", "PRE", "TP", "TT"]
+
+    DELIMITER_ASAP_SECTION = "~"
 
     # Pulls the field codes like TH03 or AIR12 into two capture groups (TH)(03) or (AIR)(12)
-    FIELD_CODE_PATTERN = re.compile(r'([A-Z]{2,3})([0-9]{1,2})')
+    FIELD_CODE_PATTERN = re.compile(r"([A-Z]{2,3})([0-9]{1,2})")
 
     sections: list[ASAPSection]
     dispenses: list[ASAPDispense]
@@ -163,13 +164,12 @@ class ASAP:
         #
         # Note that until this is fixed, the parser will not accept a custom delimiters
         asap_contents.replace(
-            self.DELIMITER_ASAP_SECTION * 2,
-            self.DELIMITER_ASAP_SECTION
+            self.DELIMITER_ASAP_SECTION * 2, self.DELIMITER_ASAP_SECTION
         )
 
         asap_section_strings = asap_contents.split(self.DELIMITER_ASAP_SECTION)
         for section_string in asap_section_strings:
-            if '*' in section_string:
+            if "*" in section_string:
                 asap_section = ASAPSection(section_string)
                 sections.append(asap_section)
         return sections
@@ -205,22 +205,25 @@ class ASAP:
         field_header, field_number_string = field_code_matches.groups()
         field_number = int(field_number_string)
         for section in self.sections:
-            if section.section_header == field_header and len(section.fields) >= field_number:
+            if (
+                section.section_header == field_header
+                and len(section.fields) >= field_number
+            ):
                 return section.fields[field_number]
 
     def analyze(self):
         """
         Print statistics about an ingested ASAP report
         """
-        version = self.get_field('TH01')
-        print(f'Detected ASAP report version: {version}')
+        version = self.get_field("TH01")
+        print(f"Detected ASAP report version: {version}")
 
-        print(f'Total valid sections detected: {str(len(self.sections))}')
+        print(f"Total valid sections detected: {str(len(self.sections))}")
 
         unsatisfied_required_sections = self.unsatisfied_required_sections
         if not len(unsatisfied_required_sections) > 0:
-            print('All required sections present.')
+            print("All required sections present.")
         else:
-            print(f'Required sections not present: {unsatisfied_required_sections}')
+            print(f"Required sections not present: {unsatisfied_required_sections}")
 
-        print(f'Total dispenses: {str(len(self.dispenses))}')
+        print(f"Total dispenses: {str(len(self.dispenses))}")
