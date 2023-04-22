@@ -68,6 +68,30 @@ class ASAPSection:
         return output
 
 
+class ASAPDispense:
+    """
+    A group of ASAPSections representing a single dispensed medication and all of its associated information
+    """
+
+    DISPENSE_SECTION_HEADERS = [
+        'PAT',
+        'DSP',
+        'PRE',
+        'CDI',
+        'AIR',
+    ]
+
+    sections: list[ASAPSection]
+
+    def __init__(self):
+        self.sections = []
+
+    def already_contains(self, new_section: ASAPSection):
+        for section in self.sections:
+            if new_section.section_header == section.section_header:
+                return True
+        return False
+
 
 class ASAP:
     """
@@ -99,6 +123,7 @@ class ASAP:
     def __init__(self, asap_contents: str):
         self.verify_file_header(asap_contents)
         self.sections = self.parse(asap_contents)
+        self.dispenses = self.collect_dispenses()
 
     def verify_file_header(self, asap_contents: str):
         """
@@ -149,6 +174,24 @@ class ASAP:
                 sections.append(asap_section)
         return sections
 
+    def collect_dispenses(self) -> list[ASAPDispense]:
+        """
+        Iterates through the sections array, creating ASAPDispense groups of sections representing a single dispensation
+
+        @return:
+        """
+        dispenses = []
+        open_dispense_record = ASAPDispense()
+        for section in self.sections:
+            if section.section_header in ASAPDispense.DISPENSE_SECTION_HEADERS:
+                # A dispense record can't contain two of the same section so a duplicate means it's a new dispense
+                if open_dispense_record.already_contains(section):
+                    dispenses.append(open_dispense_record)
+                    open_dispense_record = ASAPDispense()
+                else:
+                    open_dispense_record.sections.append(section)
+        return dispenses
+
     def get_field(self, field_code: str) -> str:
         """
         Gets a field by field code (TH02) in a the sections array
@@ -179,3 +222,5 @@ class ASAP:
             print('All required sections present.')
         else:
             print(f'Required sections not present: {unsatisfied_required_sections}')
+
+        print(f'Total dispenses: {str(len(self.dispenses))}')
