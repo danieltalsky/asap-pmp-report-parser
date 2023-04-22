@@ -10,16 +10,14 @@ The ASAP format is delimited flat file format that uses `~` as section delimiter
 ## Setup
 
 ```shell
-virtualenv env
-source env/bin/activate
-pip install -r requirements.txt
-python -m app --help
+pipenv install
+pipenv run python -m app --help
 ```
 
 ## Parsing ASAP files
 
 ```shell
-python -m app < filename
+pipenv run python -m app path/to/asap.txt
 ```
 
 ---  
