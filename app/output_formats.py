@@ -27,7 +27,7 @@ class ASAPOutputFormat:
     PHI_REPLACEMENT = "# REDACT #"
 
     output_template: str
-    output_template_dispenses: str
+    output_template_patients: str
     unsafe_phi_display: bool
 
     def __init__(self, unsafe_phi_display: bool = False):
@@ -68,7 +68,7 @@ class ASAPOutputFormat:
                 patient_dict)
 
             patients += Formatter().vformat(
-                self.output_template_dispenses, (), redacted_patient_dict
+                self.output_template_patients, (), redacted_patient_dict
             )
 
         asap_dict["patients"] = patients
@@ -91,8 +91,8 @@ class ASAPHTMLOutput(ASAPOutputFormat):
           th {{ padding: 2px; }}
           th>div {{ font-size: .4em; }}
           td {{ padding: 4px; font-size: 1.4em; font-family: monospace;}}
-          section.dispenses {{ margin: 1em; background: #eee; padding: 1em;}}
-          section.dispense {{ margin: 1em; padding: 1em; background: #e6eeff; }}
+          section.patients {{ margin: 1em; background: #eee; padding: 1em;}}
+          section.patient {{ margin: 1em; padding: 1em; background: #e6eeff; }}
           </style>
         </head>
         
@@ -179,7 +179,7 @@ class ASAPHTMLOutput(ASAPOutputFormat):
             </table>
             </section>        
             
-            <section class="dispenses">
+            <section class="patients">
             <h2>Patients</h2>
             {patients}
             </section>
@@ -214,8 +214,8 @@ class ASAPHTMLOutput(ASAPOutputFormat):
         </html>
     """
 
-    output_template_dispenses = """
-            <section class="dispense">
+    output_template_patients = """
+            <section class="patient">
             <h3>A Set of Patient Records:</h3>
         
                 <section class="pat">
