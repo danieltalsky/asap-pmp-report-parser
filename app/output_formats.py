@@ -216,7 +216,7 @@ class ASAPHTMLOutput(ASAPOutputFormat):
 
     output_template_dispenses = """
             <section class="dispense">
-            <h3>A Dispense:</h3>
+            <h3>A Set of Patient Records:</h3>
         
                 <section class="pat">
                 <h2>PAT (Patient Information)</h2>
@@ -363,6 +363,38 @@ class ASAPHTMLOutput(ASAPOutputFormat):
                     </tr>                
                 </table>
                 </section>     
+            
+                <section class="pre">
+                <h2>AIR (Additional Information Reporting)</h2>
+                <table border="1">
+                    <tr>
+                        <th>AIR01<div>State Issuing Rx ID</div></th>
+                        <th>AIR02<div>State Rx ID</div></th>
+                        <th>AIR03<div>ID Jurisdiction</div></th>
+                        <th>AIR04</th>
+                        <th>AIR05</th>
+                        <th>AIR06</th>
+                        <th>AIR07<div>Dropoff Last Name</div></th>
+                        <th>AIR08<div>Dropoff First Name</div></th>
+                        <th>AIR09<div>Pharmacist Last Name</div></th>
+                        <th>AIR10<div>Pharmacist First Name</div></th>             
+                        <th>AIR11</th>             
+                    </tr>
+                    <tr>
+                        <td>{AIR01}</td>
+                        <td>{AIR02}</td>
+                        <td>{AIR03}</td>
+                        <td>{AIR04}</td>
+                        <td>{AIR05}</td>
+                        <td>{AIR06}</td>
+                        <td>{AIR07}</td>
+                        <td>{AIR08}</td>
+                        <td>{AIR09}</td>
+                        <td>{AIR10}</td>
+                        <td>{AIR11}</td>
+                    </tr>                
+                </table>
+                </section>                 
             
             </section>  
     """

@@ -22,9 +22,18 @@ pipenv run python -m app path/to/asap.txt
 
 ### Command line options
 
-`-u` or `--unsafe-phi-display` - Display PHI data in the output. By default, PHI data is redacted.
+#### --help
 
 `--help` - Display help message.
+
+#### --unsafe-phi-display
+
+`-u` or `--unsafe-phi-display` - Display PHI data in the output. By default, PHI data is redacted.
+
+```shell
+pipenv run python -m app --unsafe-phi-display path/to/asap.txt
+```
+
 
 ---  
 ## Eventual Steps for Distributing on PyPi
