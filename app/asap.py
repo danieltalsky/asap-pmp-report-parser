@@ -152,7 +152,7 @@ class ASAP:
 
     def parse(self, asap_contents: str):
         """
-        Transforms an ASAP report file string into an array of section strings
+        Transforms an ASAP report file string into an array of section strings.
 
         @param asap_contents:
         @return:
@@ -176,7 +176,7 @@ class ASAP:
 
     def collect_dispenses(self) -> list[ASAPDispense]:
         """
-        Iterates through the sections array, creating ASAPDispense groups of sections representing a single dispensation
+        Iterates through the sections array, creating ASAPDispense groups of sections representing a single dispense.
 
         @return:
         """
@@ -194,7 +194,7 @@ class ASAP:
 
     def get_field(self, field_code: str) -> str:
         """
-        Gets a field by field code (TH02) in a the sections array
+        Gets a field by field code (TH02) in the sections array.
 
         If there are multiple matches, it naively gets the first match.
 

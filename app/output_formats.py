@@ -214,7 +214,7 @@ class ASAPHTMLOutput(ASAPOutputFormat):
             <h3>A Dispense:</h3>
         
                 <section class="pat">
-                <h2>DSP (Patient Information)</h2>
+                <h2>PAT (Patient Information)</h2>
                 <table border="1">
                     <tr>
                         <th>PAT01</th>
