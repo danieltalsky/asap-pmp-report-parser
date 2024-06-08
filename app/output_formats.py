@@ -28,6 +28,10 @@ class ASAPOutputFormat:
 
     output_template: str
     output_template_dispenses: str
+    unsafe_phi_display: bool
+
+    def __init__(self, unsafe_phi_display: bool = False):
+        self.unsafe_phi_display = unsafe_phi_display
 
     def redact_phi_from_output_dict(self, output_dict: dict):
         """
@@ -60,7 +64,8 @@ class ASAPOutputFormat:
             for section in dispense.sections:
                 dispense_dict = dispense_dict | section.asdict()
 
-            redacted_dispense_dict = self.redact_phi_from_output_dict(dispense_dict)
+            redacted_dispense_dict = dispense_dict if self.unsafe_phi_display else self.redact_phi_from_output_dict(
+                dispense_dict)
 
             dispenses += Formatter().vformat(
                 self.output_template_dispenses, (), redacted_dispense_dict
