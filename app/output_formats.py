@@ -57,21 +57,21 @@ class ASAPOutputFormat:
         for section in asap.sections:
             asap_dict = asap_dict | section.asdict()
 
-        # add dispense info
-        dispenses = ""
-        for dispense in asap.dispenses:
-            dispense_dict = defaultdict(lambda: self.MISSING_FIELD_VALUE)
-            for section in dispense.sections:
-                dispense_dict = dispense_dict | section.asdict()
+        # add patient info
+        patients = ""
+        for patient in asap.patients:
+            patient_dict = defaultdict(lambda: self.MISSING_FIELD_VALUE)
+            for section in patient.sections:
+                patient_dict = patient_dict | section.asdict()
 
-            redacted_dispense_dict = dispense_dict if self.unsafe_phi_display else self.redact_phi_from_output_dict(
-                dispense_dict)
+            redacted_patient_dict = patient_dict if self.unsafe_phi_display else self.redact_phi_from_output_dict(
+                patient_dict)
 
-            dispenses += Formatter().vformat(
-                self.output_template_dispenses, (), redacted_dispense_dict
+            patients += Formatter().vformat(
+                self.output_template_dispenses, (), redacted_patient_dict
             )
 
-        asap_dict["dispenses"] = dispenses
+        asap_dict["patients"] = patients
 
         output = Formatter().vformat(self.output_template, (), asap_dict)
 
@@ -180,8 +180,8 @@ class ASAPHTMLOutput(ASAPOutputFormat):
             </section>        
             
             <section class="dispenses">
-            <h2>Dispenses</h2>
-            {dispenses}
+            <h2>Patients</h2>
+            {patients}
             </section>
             
             <section class="tp">

@@ -77,12 +77,14 @@ class ASAPSection:
         return output
 
 
-class ASAPDispense:
+class ASAPPatient:
     """
-    A group of ASAPSections representing a single dispensed medication and all of its associated information
+    A group of ASAPSections representing a single patient and all of their associated information
     """
 
-    DISPENSE_SECTION_HEADERS = [
+    PATIENT_SECTION_HEADER = "PAT"
+
+    PATIENT_SECTION_HEADERS = [
         "PAT",
         "DSP",
         "PRE",
@@ -95,10 +97,17 @@ class ASAPDispense:
     def __init__(self):
         self.sections = []
 
-    def already_contains(self, new_section: ASAPSection):
+    def already_contains(self, new_section: ASAPSection) -> bool:
         for section in self.sections:
             if new_section.section_header == section.section_header:
                 return True
+        return False
+
+    def already_contains_patient_record(self, new_section: ASAPSection) -> bool:
+        for section in self.sections:
+            if new_section.section_header == section.section_header:
+                if new_section.section_header == self.PATIENT_SECTION_HEADER:
+                    return True
         return False
 
 
@@ -119,12 +128,12 @@ class ASAP:
     FIELD_CODE_PATTERN = re.compile(r"([A-Z]{2,3})([0-9]{1,2})")
 
     sections: list[ASAPSection]
-    dispenses: list[ASAPDispense]
+    patients: list[ASAPPatient]
 
     def __init__(self, asap_contents: str):
         self.verify_file_header(asap_contents)
         self.sections = self.parse(asap_contents)
-        self.dispenses = self.collect_dispenses()
+        self.patients = self.collect_patients()
 
     def verify_file_header(self, asap_contents: str):
         """
@@ -174,23 +183,23 @@ class ASAP:
                 sections.append(asap_section)
         return sections
 
-    def collect_dispenses(self) -> list[ASAPDispense]:
+    def collect_patients(self) -> list[ASAPPatient]:
         """
-        Iterates through the sections array, creating ASAPDispense groups of sections representing a single dispense.
+        Iterates through the sections array, creating ASAPPatient groups of sections representing a single patient.
 
         @return:
         """
-        dispenses = []
-        open_dispense_record = ASAPDispense()
+        patients = []
+        open_patient_record = ASAPPatient()
         for section in self.sections:
-            if section.section_header in ASAPDispense.DISPENSE_SECTION_HEADERS:
-                # A dispense record can't contain two of the same section so a duplicate means it's a new dispense
-                if open_dispense_record.already_contains(section):
-                    dispenses.append(open_dispense_record)
-                    open_dispense_record = ASAPDispense()
+            if section.section_header in ASAPPatient.PATIENT_SECTION_HEADERS:
+                # A patient record can't contain two patient records so a duplicate means a new patient
+                if open_patient_record.already_contains_patient_record(section):
+                    patients.append(open_patient_record)
+                    open_patient_record = ASAPPatient()
                 else:
-                    open_dispense_record.sections.append(section)
-        return dispenses
+                    open_patient_record.sections.append(section)
+        return patients
 
     def get_field(self, field_code: str) -> str:
         """
@@ -226,4 +235,4 @@ class ASAP:
         else:
             print(f"Required sections not present: {unsatisfied_required_sections}")
 
-        print(f"Total dispenses: {str(len(self.dispenses))}")
+        print(f"Total dispenses: {str(len(self.patients))}")
