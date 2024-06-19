@@ -4,17 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-certifi = "~=2024.6.2"
-chardet = "~=3.0.4"
-idna = "~=3.7"
-pkginfo = "~=1.11.0"
-requests = "~=2.32.3"
-requests-toolbelt = "~=0.8.0"
-tqdm = "~=4.66.4"
-twine = "~=3.7.1"
-urllib3 = "~=1.26.18"
+certifi = "*"
+chardet = "*"
+idna = "*"
+pkginfo = "*"
+requests = "*"
+requests-toolbelt = "*"
+tqdm = "*"
+twine = "*"
+urllib3 = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"
