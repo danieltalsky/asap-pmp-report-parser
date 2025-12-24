@@ -1,0 +1,66 @@
+[project]
+name = "asap-pmp-report-parser"
+version = "0.2.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+license = { text = "Proprietary" }
+authors = [{ name = "Daniel Talsky", email = "danieltalsky@gmail.com" }]
+
+dependencies = [
+  "certifi",
+  "chardet",
+  "idna",
+  "pkginfo",
+  "requests",
+  "requests-toolbelt",
+  "tqdm",
+  "twine",
+  "urllib3",
+]
+
+[project.urls]
+Repository = "https://github.com/danieltalsky/asap-pmp-report-parser"
+
+[tool.uv]
+index-url = "https://pypi.org/simple"
+
+[dependency-groups]
+dev = [
+  "ruff>=0.6.0",
+]
+
+# -----------------------
+# Ruff (lint + format)
+# -----------------------
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+fix = true
+
+lint.select = [
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # isort
+  "UP", # pyupgrade
+  "B",  # flake8-bugbear
+  "SIM",# flake8-simplify
+]
+lint.ignore = [
+  "E203", # conflict with formatter slicing rules
+]
+
+# Exclude typical build/venv stuff
+exclude = [
+  ".git",
+  ".venv",
+  "venv",
+  "build",
+  "dist",
+  "__pypackages__",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
