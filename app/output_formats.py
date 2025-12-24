@@ -64,12 +64,11 @@ class ASAPOutputFormat:
             for section in patient.sections:
                 patient_dict = patient_dict | section.asdict()
 
-            redacted_patient_dict = patient_dict if self.unsafe_phi_display else self.redact_phi_from_output_dict(
-                patient_dict)
-
-            patients += Formatter().vformat(
-                self.output_template_patients, (), redacted_patient_dict
+            redacted_patient_dict = (
+                patient_dict if self.unsafe_phi_display else self.redact_phi_from_output_dict(patient_dict)
             )
+
+            patients += Formatter().vformat(self.output_template_patients, (), redacted_patient_dict)
 
         asap_dict["patients"] = patients
 

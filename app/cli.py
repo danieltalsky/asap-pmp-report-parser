@@ -11,10 +11,7 @@ def main():
     parser = ArgumentParser(prog="cli")
 
     # File path to ASAP source file
-    parser.add_argument(
-        "asap_source_filepath",
-        help="ASAP filepath"
-    )
+    parser.add_argument("asap_source_filepath", help="ASAP filepath")
 
     # Personal Health Information is redacted by default in the output, -u outputs PHI
     parser.add_argument(
@@ -24,19 +21,17 @@ def main():
         default=False,
         required=False,
         action="store_true",
-        help="If set, do not redact PHI in the output.  Default is to redact PHI."
+        help="If set, do not redact PHI in the output.  Default is to redact PHI.",
     )
 
     args = parser.parse_args()
 
     print("Opening: " + args.asap_source_filepath)
     try:
-        with open(args.asap_source_filepath, "r") as my_file:
+        with open(args.asap_source_filepath) as my_file:
             asap = ASAP(my_file.read())
     except InvalidASAPFile:
-        print(
-            f"File {args.filepath} is not an ASAP file.  File must be text and begin with an ASAP header."
-        )
+        print(f"File {args.filepath} is not an ASAP file.  File must be text and begin with an ASAP header.")
 
     # Print basic stats
     asap.analyze()

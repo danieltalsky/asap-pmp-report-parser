@@ -98,17 +98,7 @@ class ASAPPatient:
         self.sections = []
 
     def already_contains(self, new_section: ASAPSection) -> bool:
-        for section in self.sections:
-            if new_section.section_header == section.section_header:
-                return True
-        return False
-
-    def already_contains_patient_record(self, new_section: ASAPSection) -> bool:
-        for section in self.sections:
-            if new_section.section_header == section.section_header:
-                if new_section.section_header == self.PATIENT_SECTION_HEADER:
-                    return True
-        return False
+        return any(new_section.section_header == section.section_header for section in self.sections)
 
 
 class ASAP:
@@ -172,9 +162,7 @@ class ASAP:
         # to allow a quick split.  It just removes the double ~~ created by TH09
         #
         # Note that until this is fixed, the parser will not accept a custom delimiters
-        asap_contents.replace(
-            self.DELIMITER_ASAP_SECTION * 2, self.DELIMITER_ASAP_SECTION
-        )
+        asap_contents.replace(self.DELIMITER_ASAP_SECTION * 2, self.DELIMITER_ASAP_SECTION)
 
         asap_section_strings = asap_contents.split(self.DELIMITER_ASAP_SECTION)
         for section_string in asap_section_strings:
@@ -194,7 +182,7 @@ class ASAP:
         for section in self.sections:
             if section.section_header in ASAPPatient.PATIENT_SECTION_HEADERS:
                 # A patient record can't contain two patient records so a duplicate means a new patient
-                if open_patient_record.already_contains_patient_record(section):
+                if open_patient_record.already_contains(section):
                     patients.append(open_patient_record)
                     open_patient_record = ASAPPatient()
                 else:
@@ -214,10 +202,7 @@ class ASAP:
         field_header, field_number_string = field_code_matches.groups()
         field_number = int(field_number_string)
         for section in self.sections:
-            if (
-                section.section_header == field_header
-                and len(section.fields) >= field_number
-            ):
+            if section.section_header == field_header and len(section.fields) >= field_number:
                 return section.fields[field_number]
 
     def analyze(self):
